@@ -1,6 +1,6 @@
 #include "Gview.hpp"
 
-void GView::draw()
+void GView::draw(std::list<Snake>& snakes, Herd_rabbits& herd)
 {
 
     print_name("grsnake");

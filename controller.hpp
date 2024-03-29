@@ -9,6 +9,9 @@ class Control
 	private:
 	Model& model;
 
+	std::list<Snake> snakes;
+	Herd_rabbits herd;
+
 	public:
 	Control(Model& model_)
 	:model(model_)
