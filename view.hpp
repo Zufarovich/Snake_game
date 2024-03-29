@@ -32,9 +32,17 @@ class Snake
 	int length;
 	coord head;
 	coord tail;
-	std::list<coord> body;	
+	std::list<coord> body;
 
-	private:	
+	void change_direction(const char d);
+
+	int get_direction()
+	{
+		return direction;
+	}
+
+	private:
+	int direction = 2;	
 };
 
 class View

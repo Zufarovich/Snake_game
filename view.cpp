@@ -38,6 +38,32 @@ View::View()
 	a = tcsetattr(0, TCSANOW, &term);
 }
 
+void Snake::change_direction(const char d)
+{
+	switch(d)
+	{
+		case 'w':
+			if(direction != 1)
+				direction = 0;
+			break;
+
+		case 's':
+			if(direction != 0)
+				direction = 1;
+			break;
+
+		case 'd':
+			if(direction != 3)
+				direction = 2;
+			break;
+
+		case 'a':
+			if(direction != 2)
+				direction = 3;
+			break;
+	}
+}
+
 View::~View()
 {
 

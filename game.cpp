@@ -70,14 +70,14 @@ void Model::generate_snakes()
 void Model::snake_update()
 {
 	for(auto snake = snakes.begin(); snake != snakes.end(); snake++)
-	{
-		(*snake).head.second++;
+	{		
+		coord last_head = {(*snake).head.first, (*snake).head.second};
+		
+		(*snake).head.first += direction_arr[(*snake).get_direction()].first;
+		(*snake).head.second += direction_arr[(*snake).get_direction()].second;
 
-		for(auto body_elem = (*snake).body.begin(); body_elem != (*snake).body.end(); body_elem++)
-		{
-			(*body_elem).second++;
-		}
-
-		(*snake).tail.second++;
+		(*snake).body.push_front(last_head);
+		(*snake).tail = (*snake).body.back();
+		(*snake).body.pop_back();
 	}
 }

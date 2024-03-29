@@ -8,6 +8,8 @@
 
 const int number_of_rabbits = 5;
 
+const coord direction_arr[4] = {{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
+
 class Model
 {
 	private:
