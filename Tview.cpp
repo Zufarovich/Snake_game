@@ -108,7 +108,7 @@ void TView::draw_snake(const Snake& snake)
     }
 
     move(snake.tail.first, snake.tail.second);
-    std::cout << 'o';
+    std::cout << '*';
 }
 
 void TView::mainloop()
@@ -144,7 +144,7 @@ void TView::mainloop()
                 for(const auto& onkey: key_functions)
                     onkey(buf[i]);
             }
-            
+
             buf[0] = '\0';
 	    }
     }

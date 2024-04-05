@@ -29,6 +29,7 @@ class Model
 		herd.create_herd(number_of_rabbits);
 	}
 
+	void check_eaten_rabbit(std::list<Snake>::iterator snake, Herd_rabbits& herd);
 	void change_name(char* buff);
 	void update_model();
 };
