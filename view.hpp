@@ -4,8 +4,11 @@
 #include <utility>
 #include <list>
 #include <termios.h>
+#include <functional>
 
 using coord = std::pair<int,int>;
+using on_key = std::function<void(const char d)>;
+using on_time = std::function<void()>;
 
 class Rabbit
 {
@@ -57,5 +60,9 @@ class View
 	View();
 	virtual void print_name(std::string game_name) = 0;
 	virtual void draw(std::list<Snake>& snakes, Herd_rabbits& herd) = 0;
-	void mainloop();
+	void set_onkey(on_key f);
+    void set_ontimes(on_time f);
+	virtual void mainloop() = 0;
+	std::list<on_key> key_functions;
+	std::list<on_time> time_functions;
 };

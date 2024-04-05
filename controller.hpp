@@ -8,16 +8,12 @@ class Control
 {
 	private:
 	Model& model;
-
-	std::list<Snake> snakes;
-	Herd_rabbits herd;
+	Snake& snake;
 
 	public:
-	Control(Model& model_)
-	:model(model_)
-	{
-
-	}
+	Control(Model& model_, Snake& snake_);
 	
 	void get_users_name();
+	void pressed_key(const char key);
+	void timer();
 };

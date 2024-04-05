@@ -8,13 +8,6 @@ void Model::change_name(char* buff)
 	strncpy(game_name, buff, MAX_LENGTH);
 	view.draw(snakes, herd);
 	usleep(3000000);
-
-	while(1)
-	{
-		snake_update();
-		view.draw(snakes, herd);
-		usleep(1000000/FPS);
-	}
 }
 
 void Rabbit::change_position()
@@ -67,17 +60,22 @@ void Model::generate_snakes()
 	snakes.push_back(snake);
 }
  
-void Model::snake_update()
+void Model::snake_update(std::list<Snake>::iterator snake)
+{
+	coord last_head = {(*snake).head.first, (*snake).head.second};
+	
+	(*snake).head.first += direction_arr[(*snake).get_direction()].first;
+	(*snake).head.second += direction_arr[(*snake).get_direction()].second;
+
+	(*snake).body.push_front(last_head);
+	(*snake).tail = (*snake).body.back();
+	(*snake).body.pop_back();
+}
+
+void Model::update_model()
 {
 	for(auto snake = snakes.begin(); snake != snakes.end(); snake++)
-	{		
-		coord last_head = {(*snake).head.first, (*snake).head.second};
-		
-		(*snake).head.first += direction_arr[(*snake).get_direction()].first;
-		(*snake).head.second += direction_arr[(*snake).get_direction()].second;
+		snake_update(snake);
 
-		(*snake).body.push_front(last_head);
-		(*snake).tail = (*snake).body.back();
-		(*snake).body.pop_back();
-	}
+	view.draw(snakes, herd);
 }

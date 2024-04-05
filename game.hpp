@@ -13,15 +13,15 @@ const coord direction_arr[4] = {{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
 class Model
 {
 	private:
-	View& view;
 	char game_name[MAX_LENGTH] = {};
 	void generate_snakes();
-	void snake_update();
+	void snake_update(std::list<Snake>::iterator snake);
 
+	public:
+	View& view;
 	std::list<Snake> snakes;
 	Herd_rabbits herd;
 
-	public:
 	Model(View& view_)
 	:view(view_)
 	{
@@ -29,6 +29,6 @@ class Model
 		herd.create_herd(number_of_rabbits);
 	}
 
-
-	void change_name(char* buff); 
+	void change_name(char* buff);
+	void update_model();
 };

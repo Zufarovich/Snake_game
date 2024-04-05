@@ -21,21 +21,15 @@ View* View::get_view(std::string view_mode)
 
 View::View()
 {
-	struct winsize wins;
-	ioctl(0, TIOCGWINSZ, &wins);
-
-	int win_xsize = wins.ws_row;
-	int win_ysize = wins.ws_col;
-
 	struct termios term = {};
-	int a = tcgetattr(0, &term);
+	tcgetattr(0, &term);
 
 	term_old = term;
 
 	term.c_lflag &= ~ECHO;
 	term.c_lflag &= ~ICANON;
 
-	a = tcsetattr(0, TCSANOW, &term);
+	tcsetattr(0, TCSANOW, &term);
 }
 
 void Snake::change_direction(const char d)
@@ -69,7 +63,12 @@ View::~View()
 
 }
 
-void View::mainloop()
+void View::set_onkey(on_key f)
 {
-	std::function<void()>;
+	key_functions.push_back(f);
+}
+
+void View::set_ontimes(on_time f)
+{
+	time_functions.push_back(f);
 }

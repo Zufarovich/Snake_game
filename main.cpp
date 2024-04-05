@@ -7,9 +7,10 @@ int main()
 	View* view = View::get_view("text_view");
 	
 	Model model(*view);
-	Control control(model);
+	Control control(model, *(model.snakes.begin()));
 	
 	control.get_users_name();
+	view->mainloop();
 
 	return 0;
 }

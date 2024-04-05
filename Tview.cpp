@@ -1,5 +1,13 @@
 #include "Tview.hpp"
 #include <sys/ioctl.h>
+#include <functional>
+#include <poll.h>
+#include <sys/types.h>
+#include <sys/uio.h>
+#include <unistd.h>
+
+#define BUFSIZE 128
+#define FPS 5
 
 void TView::cls()
 {
@@ -26,10 +34,10 @@ void TView::draw(std::list<Snake>& snakes, Herd_rabbits& herd)
     }
 	std::cout << std::flush;
 
-	draw_border('#', 0, 0, win_xsize, 0);
-	draw_border('#', 0, win_ysize, win_xsize, win_ysize);
-	draw_border('#', win_xsize, 0, win_xsize, win_ysize);
-	draw_border('#', 0, 0, 0, win_ysize);
+	draw_border('|', 0, 0, win_xsize, 0);
+	draw_border('|', 0, win_ysize, win_xsize, win_ysize);
+	draw_border('-', win_xsize, 0, win_xsize, win_ysize);
+	draw_border('-', 0, 0, 0, win_ysize);
 
     draw_herd(herd);
 
@@ -101,4 +109,43 @@ void TView::draw_snake(const Snake& snake)
 
     move(snake.tail.first, snake.tail.second);
     std::cout << 'o';
+}
+
+void TView::mainloop()
+{
+    struct pollfd input = {0, POLLIN, 0};
+    char buf[BUFSIZE] = "";
+
+    int timeout = 1000/FPS;
+
+	while(1)
+	{
+        auto first_time = std::chrono::system_clock::now();
+        int n = poll(&input, 1, timeout);
+        auto second_time = std::chrono::system_clock::now();
+        int time = std::chrono::duration_cast<std::chrono::milliseconds>(second_time - first_time).count();
+        timeout -= time;
+
+        if(n == 0 || timeout <= 0)
+        {
+            for(const auto& ontime: time_functions)
+            {  
+                ontime();
+                timeout = 1000/FPS;
+            }
+        }
+
+        if(n == 1)
+        {
+            int a = read(0, buf, sizeof(buf));
+                
+            for(int i = 0; i < a; i++)
+            {
+                for(const auto& onkey: key_functions)
+                    onkey(buf[i]);
+            }
+            
+            buf[0] = '\0';
+	    }
+    }
 }
