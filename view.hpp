@@ -5,8 +5,18 @@
 #include <list>
 #include <termios.h>
 #include <functional>
+#include <stdlib.h>
 
-using coord = std::pair<int,int>;
+struct coord : public std::pair<int, int>
+{
+	using base = std::pair<int, int>;
+	using base::base;
+	int distance(const coord second_coord)
+	{
+		return std::abs(second_coord.first - first) + std::abs(second_coord.second - second); 
+	}
+};
+
 using on_key = std::function<void(const char d)>;
 using on_time = std::function<void()>;
 
@@ -32,6 +42,7 @@ class Snake
 {
 	public:
 	void create_snake();
+	void create_bot(Snake& previous);
 	int length;
 	coord head;
 	coord tail;

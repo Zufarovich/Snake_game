@@ -30,6 +30,7 @@ class Model
 	}
 
 	void check_eaten_rabbit(std::list<Snake>::iterator snake, Herd_rabbits& herd);
+	void bot_update(std::list<Snake>::iterator snake, Herd_rabbits& herd);
 	void change_name(char* buff);
 	void update_model();
 };
