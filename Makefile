@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -Wall -g -O0 -O -std=c++11
+CXXFLAGS = -Wall -g -O0 -O -lsfml-graphics -lsfml-window -lsfml-system -std=c++11
 PROJ = snake
 
 all:

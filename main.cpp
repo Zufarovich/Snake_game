@@ -4,7 +4,7 @@
 
 int main()
 {
-	View* view = View::get_view("text_view");
+	View* view = View::get_view("g_view");
 	
 	Model model(*view);
 	Control control(model, *(model.snakes.begin()));

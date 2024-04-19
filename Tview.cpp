@@ -5,9 +5,23 @@
 #include <sys/types.h>
 #include <sys/uio.h>
 #include <unistd.h>
+#include <chrono>
 
 #define BUFSIZE 128
 #define FPS 5
+
+TView::TView()
+{
+    struct termios term = {};
+	tcgetattr(0, &term);
+
+	term_old = term;
+
+	term.c_lflag &= ~ECHO;
+	term.c_lflag &= ~ICANON;
+
+	tcsetattr(0, TCSANOW, &term);
+}
 
 void TView::cls()
 {

@@ -61,7 +61,7 @@ class Snake
 
 class View
 {
-	private:
+	protected:
 	struct termios term_old;
 
 	public:

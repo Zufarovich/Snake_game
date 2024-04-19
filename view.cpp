@@ -21,15 +21,7 @@ View* View::get_view(std::string view_mode)
 
 View::View()
 {
-	struct termios term = {};
-	tcgetattr(0, &term);
-
-	term_old = term;
-
-	term.c_lflag &= ~ECHO;
-	term.c_lflag &= ~ICANON;
-
-	tcsetattr(0, TCSANOW, &term);
+	
 }
 
 void Snake::change_direction(const char d)
