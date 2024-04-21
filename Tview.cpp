@@ -58,6 +58,11 @@ void TView::draw(std::list<Snake>& snakes, Herd_rabbits& herd)
     for(const auto& snake: snakes)
         draw_snake(snake);
 
+    std::cout << std::flush;
+
+    move(2, win_ysize - 10);
+    std::cout<< "Score:" << snakes.front().length;
+
 	move(win_xsize, win_ysize);
 	std::cout << std::flush;
 }

@@ -5,6 +5,9 @@
 GView::GView()
     :window(sf::VideoMode(1600, 800), "Window Game"), rectangle(sf::Vector2f(10.f, 10.f)), head(10.f), body(10.f),rabbit_icon(10.f, 3)
 {
+    if(!font.loadFromFile("SEASRN__.ttf"))
+        std::cout << "Error while loading font" << std::endl;
+
     rectangle.setFillColor(sf::Color::Blue);
     rectangle.setPosition(0.f, 0.f);
     window.setFramerateLimit(10);
@@ -70,6 +73,14 @@ void GView::draw(std::list<Snake>& snakes, Herd_rabbits& herd)
 
     for(const auto& snake : snakes)
         draw_snake(snake);
+
+    score.setFont(font);
+    score.setString("Score:" + std::to_string(snakes.front().length));
+    score.setCharacterSize(25);
+    score.setFillColor(sf::Color::Red);
+    score.setPosition(1400, 30);
+    score.setStyle(sf::Text::Bold | sf::Text::Underlined);
+    window.draw(score);
 
     window.display();
 }

@@ -12,6 +12,8 @@ class GView : public View
     sf::CircleShape head;
     sf::CircleShape body;
     sf::CircleShape rabbit_icon;
+    sf::Text score;
+    sf::Font font;
 
     public:
     GView();
