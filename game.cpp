@@ -4,6 +4,9 @@
 #include <unistd.h>
 #include <limits.h>
 
+int win_xsize;
+int win_ysize;
+
 void Model::change_name(char* buff)
 {
 	strncpy(game_name, buff, MAX_LENGTH);
@@ -16,8 +19,8 @@ void Rabbit::change_position()
 	struct winsize wins;
 	ioctl(0, TIOCGWINSZ, &wins);
 
-	int win_xsize = wins.ws_row;
-	int win_ysize = wins.ws_col;
+	win_xsize = wins.ws_row;
+	win_ysize = wins.ws_col;
 
 	position.first = 1 + rand() % (win_xsize - 2);
 	position.second = 1 + rand() % (win_ysize - 2);
@@ -55,12 +58,6 @@ void Snake::create_snake()
 
 void Snake::create_bot(Snake& previous)
 {
-	struct winsize wins;
-	ioctl(0, TIOCGWINSZ, &wins);
-
-	int win_xsize = wins.ws_row;
-	int win_ysize = wins.ws_col;
-
 	length = 4;
 
 	head.first = previous.head.first;
@@ -80,6 +77,38 @@ void Snake::create_bot(Snake& previous)
 
 	tail.first = head.first;
 	tail.second = head.second - 3;
+}
+
+int Snake::check_self_intersection()
+{
+	for(auto body_elem = body.begin(); body_elem != body.end(); body_elem++)
+	{
+		if(head == (*body_elem))
+			return 1;
+	}
+
+	if((head.first == 1) || (head.first == win_xsize) || (head.second == 1) || (head.second == win_ysize))
+		return 1;
+
+	return 0;
+}
+
+int Model::check_enemy_intersection(std::list<Snake>::iterator candidate, std::list<Snake>::iterator enemy_snake)
+{
+	
+	if((*enemy_snake).head == (*candidate).head)
+		return 1;
+
+	for(auto body_elem = (*enemy_snake).body.begin(); body_elem != (*enemy_snake).body.end(); body_elem++)
+	{
+		if((*candidate).head == (*body_elem))
+			return 1;
+	}
+
+	if((*enemy_snake).tail == (*candidate).head)
+		return 1;
+
+	return 0;
 }
 
 void Model::generate_snakes()
@@ -122,25 +151,52 @@ void Model::bot_update(std::list<Snake>::iterator snake, Herd_rabbits& herd)
 		}
 	}
 
-	int x_diff = closest.position.first - (*snake).head.first;
+	if(closest.position.first != (*snake).head.first)
+	{
+		if((*snake).head.first < closest.position.first)
+		{
+			if((*snake).get_direction() != 0)
+				(*snake).change_direction('s');
+			else
+				(*snake).change_direction('d');
+		}
+		else
+		{
+			if((*snake).get_direction() != 1)
+				(*snake).change_direction('w');
+			else
+				(*snake).change_direction('a');
+		}
+	}
+	else
+	{
+		if((*snake).head.second != closest.position.second)
+		{
+			if((*snake).head.second < closest.position.second)
+			{
+				if((*snake).get_direction() != 3)
+					(*snake).change_direction('d');
+				else
+					(*snake).change_direction('s');
+			}
+			else
+			{
+				if((*snake).get_direction() != 2)
+					(*snake).change_direction('a');
+				else
+					(*snake).change_direction('w');
+			}
+		}
+	}
 
-	if(x_diff > 0)
-		(*snake).change_direction('d');
-	else	
-		(*snake).change_direction('a');
+	coord last_head = {(*snake).head.first, (*snake).head.second};
+	
+	(*snake).head.first += direction_arr[(*snake).get_direction()].first;
+	(*snake).head.second += direction_arr[(*snake).get_direction()].second;
 
-	while(x_diff != 0)
-		x_diff = closest.position.first - (*snake).head.first;
-
-	int y_diff = closest.position.second - (*snake).head.second;
-
-	if(y_diff > 0)
-		(*snake).change_direction('w');
-	else	
-		(*snake).change_direction('s');
-
-	while(y_diff != 0)
-		y_diff = closest.position.first - (*snake).head.first;
+	(*snake).body.push_front(last_head);
+	(*snake).tail = (*snake).body.back();
+	(*snake).body.pop_back();
 }
 
 void Model::check_eaten_rabbit(std::list<Snake>::iterator snake, Herd_rabbits& herd)
@@ -168,6 +224,7 @@ void Model::update_model()
 		{
 			snake_update(snake);
 			check_eaten_rabbit(snake, herd);
+			i++;
 		}
 		else
 		{

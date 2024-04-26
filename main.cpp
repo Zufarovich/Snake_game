@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
 	Control control(model, *(model.snakes.begin()));
 	
 	control.get_users_name();
-	view->mainloop();
+	view->mainloop(model.snakes);
 
 	return 0;
 }

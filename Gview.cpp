@@ -39,8 +39,6 @@ void GView::draw_border()
         rectangle.setPosition(1600 - RECTANGLE_SIZE, i*RECTANGLE_SIZE);
         window.draw(rectangle);
     }
-
-    //window.display();
 }
 
 void GView::draw_rabbit(const Rabbit& rabbit)
@@ -85,10 +83,8 @@ void GView::draw(std::list<Snake>& snakes, Herd_rabbits& herd)
     window.display();
 }
 
-void GView::mainloop()
+void GView::mainloop(std::list<Snake>& snakes)
 {
-    int direction = 0;
-
     while(window.isOpen())
     {
         sf::Event event;
@@ -124,6 +120,13 @@ void GView::mainloop()
 
         for(const auto& ontime : time_functions)
             ontime();
+
+        auto snake = snakes.begin();
+
+        if((*snake).check_self_intersection())
+            break;
+        
+        snake++;
 
         window.display();
     }

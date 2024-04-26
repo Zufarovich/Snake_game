@@ -29,6 +29,7 @@ class Model
 		herd.create_herd(number_of_rabbits);
 	}
 
+	int  check_enemy_intersection(std::list<Snake>::iterator candidate, std::list<Snake>::iterator enemy_snake);
 	void check_eaten_rabbit(std::list<Snake>::iterator snake, Herd_rabbits& herd);
 	void bot_update(std::list<Snake>::iterator snake, Herd_rabbits& herd);
 	void change_name(char* buff);

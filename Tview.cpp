@@ -16,11 +16,16 @@ TView::TView()
 	tcgetattr(0, &term);
 
 	term_old = term;
-
+    
 	term.c_lflag &= ~ECHO;
 	term.c_lflag &= ~ICANON;
 
 	tcsetattr(0, TCSANOW, &term);
+}
+
+TView::~TView()
+{
+    tcsetattr(0, TCSANOW, &term_old);
 }
 
 void TView::cls()
@@ -130,7 +135,7 @@ void TView::draw_snake(const Snake& snake)
     std::cout << '*';
 }
 
-void TView::mainloop()
+void TView::mainloop(std::list<Snake>& snakes)
 {
     struct pollfd input = {0, POLLIN, 0};
     char buf[BUFSIZE] = "";
@@ -166,5 +171,18 @@ void TView::mainloop()
 
             buf[0] = '\0';
 	    }
+
+        auto snake = snakes.begin();
+
+        if((*snake).check_self_intersection())
+            break;
+        
+        snake++;
+
+        /*for(snake; snake != snakes.end(); snake++)
+        {
+            if((*snake).check_self_intersection())
+                snakes.erase(snake);
+        }*/
     }
 }

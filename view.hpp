@@ -11,9 +11,10 @@ struct coord : public std::pair<int, int>
 {
 	using base = std::pair<int, int>;
 	using base::base;
-	int distance(const coord second_coord)
+
+	int distance(const coord second_point)
 	{
-		return std::abs(second_coord.first - first) + std::abs(second_coord.second - second); 
+		return std::abs(second_point.first - first) + std::abs(second_point.second - second); 
 	}
 };
 
@@ -49,6 +50,7 @@ class Snake
 	std::list<coord> body;
 
 	void change_direction(const char d);
+	int check_self_intersection();
 
 	int get_direction()
 	{
@@ -73,7 +75,7 @@ class View
 	virtual void draw(std::list<Snake>& snakes, Herd_rabbits& herd) = 0;
 	void set_onkey(on_key f);
     void set_ontimes(on_time f);
-	virtual void mainloop() = 0;
+	virtual void mainloop(std::list<Snake>& snakes) = 0;
 	std::list<on_key> key_functions;
 	std::list<on_time> time_functions;
 };
