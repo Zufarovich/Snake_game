@@ -25,7 +25,7 @@ int main(int argc, char* argv[])
 		int number_of_rabbits = 5;
 		int number_of_bots = 1;
 
-		while((opt = getopt_long(argc, argv, "tg::r:b:", long_options, &option_index)) != -1)
+		while((opt = getopt_long(argc, argv, "tgh::r:b:", long_options, &option_index)) != -1)
 		{
 			switch(opt){
 			case 't':
@@ -36,16 +36,22 @@ int main(int argc, char* argv[])
 				view = View::get_view("g_view");
 				continue_game = true;
 				break;	
-			case 'h':
-				std::cout << "use option -t(--text_view) to use text view and -g(--graphical_view) to use graphical view" << std::endl;
-				break;
 			case 'r':
 				if(optarg)
 					number_of_rabbits = strtol(optarg, NULL, 10);
+				else
+					std::cout << "option -r requires argument(number_of_rabbits)" << std::endl;
 				break;
 			case 'b':
 				if(optarg)
 					number_of_bots = strtol(optarg, NULL, 10);
+				else
+					std::cout << "option -b requres argument(number_of_bots)" << std::endl;
+				break;
+			case 'h':
+				std::cout << "use option -t(--text_view) to use text view and -g(--graphical_view) to use graphical view" << std::endl;
+				std::cout << "option -r and num_of_rabbits to set number of rabbits" << std::endl;
+				std::cout << "option -b and num_of_bots to set number of bots" << std::endl;
 				break;
 			default:
 				view = View::get_view("g_view");
