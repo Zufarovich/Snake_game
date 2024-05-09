@@ -103,10 +103,12 @@ int Model::check_enemy_intersection(std::list<Snake>::iterator candidate, std::l
 	return 0;
 }
 
-void Model::generate_snakes()
+void Model::generate_snakes(int number_of_bots)
 {
 	create_snake();
-	create_bot();
+	
+	for(int i = 0; i < number_of_bots; i++)
+		create_bot();
 }
  
 void Model::snake_update(std::list<Snake>::iterator snake)

@@ -12,7 +12,7 @@ class Model
 {
 	private:
 	char game_name[MAX_LENGTH] = {};
-	void generate_snakes();
+	void generate_snakes(int number_of_bots);
 	void snake_update(std::list<Snake>::iterator snake);
 	void create_bot();
 	void create_snake();
@@ -23,10 +23,10 @@ class Model
 	std::list<Snake> snakes;
 	Herd_rabbits herd;
 
-	Model(View& view_, int number_of_rabbits)
+	Model(View& view_, int number_of_rabbits, int number_of_bots)
 	:view(view_)
 	{
-		generate_snakes();
+		generate_snakes(number_of_bots);
 		create_herd(number_of_rabbits);
 	}
 
