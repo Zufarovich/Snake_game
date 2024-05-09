@@ -36,6 +36,12 @@ void Control::check_intersections(int* game_ended)
 
 	if(model.check_self_intersection(snake))
         *game_ended = 1;
+
+	for(auto enemy = model.snakes.begin(); enemy != model.snakes.end(); enemy++)
+	{
+		if(snake != enemy && !game_ended)
+			*game_ended = model.check_enemy_intersection(snake, enemy);
+	}
         
 	snake++;
 
@@ -44,6 +50,13 @@ void Control::check_intersections(int* game_ended)
 		if(model.check_self_intersection(snake))
 		{
 			(*snake).length = 0;
+		}
+
+		for(auto enemy = model.snakes.begin(); enemy != model.snakes.end(); enemy++)
+		{
+			if(snake != enemy)
+				if(model.check_enemy_intersection(snake, enemy))
+					(*snake).length = 0;
 		}
 	}
 }

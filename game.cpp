@@ -215,14 +215,12 @@ void Model::update_model()
 		{
 			snake_update(snake);
 			check_eaten_rabbit(snake, herd);
-			check_self_intersection(snake);
 			i++;
 		}
 		else
 		{
 			bot_update(snake, herd);
 			check_eaten_rabbit(snake, herd);
-			check_self_intersection(snake);
 		}
 	}
 
