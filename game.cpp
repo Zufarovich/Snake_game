@@ -22,8 +22,8 @@ void Rabbit::change_position()
 	win_xsize = wins.ws_row;
 	win_ysize = wins.ws_col;
 
-	position.first = 1 + rand() % (win_xsize - 2);
-	position.second = 1 + rand() % (win_ysize - 2);
+	position.first = 2 + rand() % (win_xsize - 2);
+	position.second = 2 + rand() % (win_ysize -2);
 }
 
 void Herd_rabbits::create_herd(int number_of_rabbits)

@@ -38,7 +38,7 @@ void TView::draw(std::list<Snake>& snakes, Herd_rabbits& herd)
 	cls();
 	setcolor(0, 34);
 
-	struct winsize wins;
+    struct winsize wins;
 	ioctl(0, TIOCGWINSZ, &wins);
 
 	int win_xsize = wins.ws_row;
@@ -179,4 +179,24 @@ void TView::mainloop(std::list<Snake>& snakes)
             buf[0] = '\0';
 	    }  
     }
+
+    cls();
+
+    struct winsize wins;
+	ioctl(0, TIOCGWINSZ, &wins);
+
+	int WIN_XSIZE = wins.ws_row;
+	int WIN_YSIZE = wins.ws_col;
+
+    move(WIN_XSIZE/2, WIN_YSIZE/2);
+    setcolor(0, 31);
+    std::cout << "Score:" << (*snakes.begin()).length;
+    move(WIN_XSIZE, WIN_YSIZE);
+
+    std::cout << std::flush;
+
+    usleep(5000000);
+
+    cls();
+    std::cout << std::flush;
 }

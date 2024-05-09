@@ -126,6 +126,20 @@ void GView::mainloop(std::list<Snake>& snakes)
 
         window.display();
     }
+
+    window.clear();
+
+    score.setFont(font);
+    score.setString("Score:" + std::to_string(snakes.front().length));
+    score.setCharacterSize(25);
+    score.setFillColor(sf::Color::Red);
+    score.setPosition(800, 400);
+    score.setStyle(sf::Text::Bold | sf::Text::Underlined);
+    window.draw(score);
+
+    window.display();
+
+    usleep(5000000);
 }
 
 void GView::print_name(std::string game_name)
