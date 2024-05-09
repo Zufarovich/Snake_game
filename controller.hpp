@@ -12,8 +12,9 @@ class Control
 
 	public:
 	Control(Model& model_, Snake& snake_);
-	
+
+	void check_intersections(int* game_ended);
 	void get_users_name();
 	void pressed_key(const char key);
-	void timer();
+	void timer(int* game_ended);
 };

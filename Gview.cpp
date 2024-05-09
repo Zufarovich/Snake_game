@@ -70,7 +70,8 @@ void GView::draw(std::list<Snake>& snakes, Herd_rabbits& herd)
         draw_rabbit(rabbit);
 
     for(const auto& snake : snakes)
-        draw_snake(snake);
+        if((snake).length)
+            draw_snake(snake);
 
     score.setFont(font);
     score.setString("Score:" + std::to_string(snakes.front().length));
@@ -85,7 +86,9 @@ void GView::draw(std::list<Snake>& snakes, Herd_rabbits& herd)
 
 void GView::mainloop(std::list<Snake>& snakes)
 {
-    while(window.isOpen())
+    int game_ended = 0;
+
+    while(window.isOpen() && !game_ended)
     {
         sf::Event event;
         while(window.pollEvent(event))
@@ -119,14 +122,7 @@ void GView::mainloop(std::list<Snake>& snakes)
         }
 
         for(const auto& ontime : time_functions)
-            ontime();
-
-        auto snake = snakes.begin();
-
-        if((*snake).check_self_intersection())
-            break;
-        
-        snake++;
+            ontime(&game_ended);
 
         window.display();
     }

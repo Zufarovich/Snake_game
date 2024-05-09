@@ -13,8 +13,11 @@ Control::Control(Model& model_, Snake& snake)
 	auto func_key = std::bind(&Control::pressed_key, this, std::placeholders::_1);
 	model.view.set_onkey(func_key);
 
-	auto func_time = std::bind(&Control::timer, this);
+	auto func_time = std::bind(&Control::timer, this, std::placeholders::_1);
 	model.view.set_ontimes(func_time);
+
+	auto func_check = std::bind(&Control::check_intersections, this, std::placeholders::_1);
+	model.view.set_ontimes(func_check);
 }
 
 void Control::pressed_key(const char key)
@@ -22,7 +25,25 @@ void Control::pressed_key(const char key)
 	snake.change_direction(key);
 }
 
-void Control::timer()
+void Control::timer(int* game_ended)
 {
 	model.update_model();
+}
+
+void Control::check_intersections(int* game_ended)
+{
+	auto snake = model.snakes.begin();
+
+	if((*snake).check_self_intersection())
+        *game_ended = 1;
+        
+	snake++;
+
+	for(snake; snake != model.snakes.end(); snake++)
+	{
+		if((*snake).check_self_intersection())
+		{
+			(*snake).length = 0;
+		}
+	}
 }

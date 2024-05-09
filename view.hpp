@@ -19,7 +19,7 @@ struct coord : public std::pair<int, int>
 };
 
 using on_key = std::function<void(const char d)>;
-using on_time = std::function<void()>;
+using on_time = std::function<void(int* game_ended)>;
 
 class Rabbit
 {

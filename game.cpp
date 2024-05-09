@@ -65,8 +65,8 @@ void Snake::create_bot(Snake& previous)
 
 	while((head.first == previous.head.first) || (head.second == previous.head.second))
 	{
-		head.first = 1 + rand() % (win_xsize - 2);
-		head.second = 1 + rand() % (win_ysize - 2);
+		head.first = 2 + rand() % (win_xsize - 2);
+		head.second = 2 + rand() % (win_ysize - 2);
 	}
 
 	coord body_1 = {head.first, head.second - 1};
@@ -136,67 +136,70 @@ void Model::snake_update(std::list<Snake>::iterator snake)
 
 void Model::bot_update(std::list<Snake>::iterator snake, Herd_rabbits& herd)
 {
-	int min_distance = INT_MAX;
-	Rabbit closest;
-
-	for(auto rabbit = herd.rabbits.begin(); rabbit != herd.rabbits.end(); rabbit++)
+	if((*snake).length)
 	{
-		int save = (*snake).head.distance(rabbit->position);
+		int min_distance = INT_MAX;
+		Rabbit closest;
 
-		if(min_distance > save)
+		for(auto rabbit = herd.rabbits.begin(); rabbit != herd.rabbits.end(); rabbit++)
 		{
-			min_distance = save;
-			closest.position.first = (*rabbit).position.first;
-			closest.position.second = (*rabbit).position.second;
+			int save = (*snake).head.distance(rabbit->position);
+
+			if(min_distance > save)
+			{
+				min_distance = save;
+				closest.position.first = (*rabbit).position.first;
+				closest.position.second = (*rabbit).position.second;
+			}
 		}
-	}
 
-	if(closest.position.first != (*snake).head.first)
-	{
-		if((*snake).head.first < closest.position.first)
+		if(closest.position.first != (*snake).head.first)
 		{
-			if((*snake).get_direction() != 0)
-				(*snake).change_direction('s');
+			if((*snake).head.first < closest.position.first)
+			{
+				if((*snake).get_direction() != 0)
+					(*snake).change_direction('s');
+				else
+					(*snake).change_direction('d');
+			}
 			else
-				(*snake).change_direction('d');
+			{
+				if((*snake).get_direction() != 1)
+					(*snake).change_direction('w');
+				else
+					(*snake).change_direction('a');
+			}
 		}
 		else
 		{
-			if((*snake).get_direction() != 1)
-				(*snake).change_direction('w');
-			else
-				(*snake).change_direction('a');
-		}
-	}
-	else
-	{
-		if((*snake).head.second != closest.position.second)
-		{
-			if((*snake).head.second < closest.position.second)
+			if((*snake).head.second != closest.position.second)
 			{
-				if((*snake).get_direction() != 3)
-					(*snake).change_direction('d');
+				if((*snake).head.second < closest.position.second)
+				{
+					if((*snake).get_direction() != 3)
+						(*snake).change_direction('d');
+					else
+						(*snake).change_direction('s');
+				}
 				else
-					(*snake).change_direction('s');
-			}
-			else
-			{
-				if((*snake).get_direction() != 2)
-					(*snake).change_direction('a');
-				else
-					(*snake).change_direction('w');
+				{
+					if((*snake).get_direction() != 2)
+						(*snake).change_direction('a');
+					else
+						(*snake).change_direction('w');
+				}
 			}
 		}
+
+		coord last_head = {(*snake).head.first, (*snake).head.second};
+		
+		(*snake).head.first += direction_arr[(*snake).get_direction()].first;
+		(*snake).head.second += direction_arr[(*snake).get_direction()].second;
+
+		(*snake).body.push_front(last_head);
+		(*snake).tail = (*snake).body.back();
+		(*snake).body.pop_back();
 	}
-
-	coord last_head = {(*snake).head.first, (*snake).head.second};
-	
-	(*snake).head.first += direction_arr[(*snake).get_direction()].first;
-	(*snake).head.second += direction_arr[(*snake).get_direction()].second;
-
-	(*snake).body.push_front(last_head);
-	(*snake).tail = (*snake).body.back();
-	(*snake).body.pop_back();
 }
 
 void Model::check_eaten_rabbit(std::list<Snake>::iterator snake, Herd_rabbits& herd)

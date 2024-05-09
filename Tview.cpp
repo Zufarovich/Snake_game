@@ -16,7 +16,7 @@ TView::TView()
 	tcgetattr(0, &term);
 
 	term_old = term;
-    
+
 	term.c_lflag &= ~ECHO;
 	term.c_lflag &= ~ICANON;
 
@@ -61,13 +61,16 @@ void TView::draw(std::list<Snake>& snakes, Herd_rabbits& herd)
     draw_herd(herd);
 
     for(const auto& snake: snakes)
-        draw_snake(snake);
+        if(snake.length)
+            draw_snake(snake);
 
     std::cout << std::flush;
 
+    setcolor(0, 31);
     move(2, win_ysize - 10);
     std::cout<< "Score:" << snakes.front().length;
 
+    setcolor(0, 34);
 	move(win_xsize, win_ysize);
 	std::cout << std::flush;
 }
@@ -123,8 +126,10 @@ void TView::draw_herd(const Herd_rabbits& herd)
 void TView::draw_snake(const Snake& snake)
 {
     move(snake.head.first, snake.head.second);
+    setcolor(0, 31);
     std::cout << 'O';
 
+    setcolor(0, 32);
     for(const auto& body_elem: snake.body)
     {
         move(body_elem.first, body_elem.second);
@@ -133,6 +138,7 @@ void TView::draw_snake(const Snake& snake)
 
     move(snake.tail.first, snake.tail.second);
     std::cout << '*';
+    setcolor(0, 34);
 }
 
 void TView::mainloop(std::list<Snake>& snakes)
@@ -141,8 +147,9 @@ void TView::mainloop(std::list<Snake>& snakes)
     char buf[BUFSIZE] = "";
 
     int timeout = 1000/FPS;
+    int game_ended = 0;
 
-	while(1)
+	while(!game_ended)
 	{
         auto first_time = std::chrono::system_clock::now();
         int n = poll(&input, 1, timeout);
@@ -154,7 +161,7 @@ void TView::mainloop(std::list<Snake>& snakes)
         {
             for(const auto& ontime: time_functions)
             {  
-                ontime();
+                ontime(&game_ended);
                 timeout = 1000/FPS;
             }
         }
@@ -170,19 +177,6 @@ void TView::mainloop(std::list<Snake>& snakes)
             }
 
             buf[0] = '\0';
-	    }
-
-        auto snake = snakes.begin();
-
-        if((*snake).check_self_intersection())
-            break;
-        
-        snake++;
-
-        /*for(snake; snake != snakes.end(); snake++)
-        {
-            if((*snake).check_self_intersection())
-                snakes.erase(snake);
-        }*/
+	    }  
     }
 }
