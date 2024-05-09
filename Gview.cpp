@@ -3,7 +3,7 @@
 #include <unistd.h>
 
 GView::GView()
-    :window(sf::VideoMode(140*RECTANGLE_SIZE, 80*RECTANGLE_SIZE), "Window Game"), rectangle(sf::Vector2f(10.f, 10.f)), head(10.f), body(10.f),rabbit_icon(10.f, 3)
+    :window(sf::VideoMode(140*RECTANGLE_SIZE + 300, 80*RECTANGLE_SIZE), "Window Game"), rectangle(sf::Vector2f(10.f, 10.f)), head(10.f), body(10.f),rabbit_icon(10.f, 3)
 {
     win_xsize = 78;
     win_ysize = 138;
@@ -27,7 +27,7 @@ GView::~GView()
 
 void GView::draw_border()
 {
-    for(int i  = 0; i < win_ysize + 2; i++)
+    for(int i  = 0; i < win_ysize + 32; i++)
     {
         rectangle.setPosition(i*RECTANGLE_SIZE, 0);
         window.draw(rectangle);
@@ -40,6 +40,12 @@ void GView::draw_border()
         rectangle.setPosition(0, i*RECTANGLE_SIZE);
         window.draw(rectangle);
         rectangle.setPosition(win_ysize*RECTANGLE_SIZE + RECTANGLE_SIZE, i*RECTANGLE_SIZE);
+        window.draw(rectangle);
+    }
+
+    for(int i = 0; i < win_xsize + 2; i++)
+    {
+        rectangle.setPosition((win_ysize + 30)*RECTANGLE_SIZE + RECTANGLE_SIZE, i*RECTANGLE_SIZE);
         window.draw(rectangle);
     }
 }
@@ -76,13 +82,25 @@ void GView::draw(std::list<Snake>& snakes, Herd_rabbits& herd)
         if((snake).length)
             draw_snake(snake);
 
+    auto snake = snakes.begin();
     score.setFont(font);
-    score.setString("Score:" + std::to_string(snakes.front().length));
-    score.setCharacterSize(25);
     score.setFillColor(sf::Color::Red);
-    score.setPosition(1200, 30);
+    score.setPosition((win_ysize + 3)*RECTANGLE_SIZE, 30);
     score.setStyle(sf::Text::Bold | sf::Text::Underlined);
+    score.setString("Your score:" + std::to_string((*snake).length));
+    score.setCharacterSize(20);
     window.draw(score);
+
+    int bot_index = 1;
+    snake++;
+
+    for(snake; snake != snakes.end(); snake++)
+    {
+        score.setPosition((win_ysize + 3)*RECTANGLE_SIZE, 30 + bot_index*35);
+        score.setString("Bot(" + std::to_string(bot_index) + "):" + std::to_string((*snake).length));
+        window.draw(score);
+        bot_index++;
+    }
 
     window.display();
 }
@@ -132,13 +150,26 @@ void GView::mainloop(std::list<Snake>& snakes)
 
     window.clear();
 
+    auto snake = snakes.begin();
+    int bot_index = 1;
+
     score.setFont(font);
-    score.setString("Score:" + std::to_string(snakes.front().length));
+    score.setString("Your score:" + std::to_string(snakes.front().length));
     score.setCharacterSize(25);
     score.setFillColor(sf::Color::Red);
-    score.setPosition(650, 350);
+    score.setPosition(800, 30);
     score.setStyle(sf::Text::Bold | sf::Text::Underlined);
     window.draw(score);
+
+    snake++;
+
+    for(snake; snake != snakes.end(); snake++)
+    {
+        score.setPosition(800, 30 + bot_index*35);
+        score.setString("Bot(" + std::to_string(bot_index) + "):" + std::to_string((*snake).length));
+        window.draw(score);
+        bot_index++;
+    }    
 
     window.display();
 
