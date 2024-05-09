@@ -34,14 +34,14 @@ void Control::check_intersections(int* game_ended)
 {
 	auto snake = model.snakes.begin();
 
-	if((*snake).check_self_intersection())
+	if(model.check_self_intersection(snake))
         *game_ended = 1;
         
 	snake++;
 
 	for(snake; snake != model.snakes.end(); snake++)
 	{
-		if((*snake).check_self_intersection())
+		if(model.check_self_intersection(snake))
 		{
 			(*snake).length = 0;
 		}

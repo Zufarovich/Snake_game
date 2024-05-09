@@ -38,13 +38,7 @@ void TView::draw(std::list<Snake>& snakes, Herd_rabbits& herd)
 	cls();
 	setcolor(0, 34);
 
-    struct winsize wins;
-	ioctl(0, TIOCGWINSZ, &wins);
-
-	int win_xsize = wins.ws_row;
-	int win_ysize = wins.ws_col;
-
-	move(win_xsize/2, win_ysize/2);
+	move((*view).win_xsize/2, (*view).win_ysize/2);
 
     if(!name_printed)
     {
@@ -53,10 +47,10 @@ void TView::draw(std::list<Snake>& snakes, Herd_rabbits& herd)
     }
 	std::cout << std::flush;
 
-	draw_border('|', 0, 0, win_xsize, 0);
-	draw_border('|', 0, win_ysize, win_xsize, win_ysize);
-	draw_border('-', win_xsize, 0, win_xsize, win_ysize);
-	draw_border('-', 0, 0, 0, win_ysize);
+	draw_border('|', 0, 0, (*view).win_xsize, 0);
+	draw_border('|', 0, (*view).win_ysize, (*view).win_xsize, (*view).win_ysize);
+	draw_border('-', (*view).win_xsize, 0, (*view).win_xsize, (*view).win_ysize);
+	draw_border('-', 0, 0, 0, (*view).win_ysize);
 
     draw_herd(herd);
 
@@ -67,11 +61,11 @@ void TView::draw(std::list<Snake>& snakes, Herd_rabbits& herd)
     std::cout << std::flush;
 
     setcolor(0, 31);
-    move(2, win_ysize - 10);
+    move(2, (*view).win_ysize - 10);
     std::cout<< "Score:" << snakes.front().length;
 
     setcolor(0, 34);
-	move(win_xsize, win_ysize);
+	move((*view).win_xsize, (*view).win_ysize);
 	std::cout << std::flush;
 }
 
@@ -151,6 +145,12 @@ void TView::mainloop(std::list<Snake>& snakes)
 
 	while(!game_ended)
 	{
+        struct winsize wins;
+        ioctl(0, TIOCGWINSZ, &wins);
+
+        (*view).win_xsize = wins.ws_row;
+        (*view) .win_ysize = wins.ws_col;
+
         auto first_time = std::chrono::system_clock::now();
         int n = poll(&input, 1, timeout);
         auto second_time = std::chrono::system_clock::now();
@@ -182,16 +182,10 @@ void TView::mainloop(std::list<Snake>& snakes)
 
     cls();
 
-    struct winsize wins;
-	ioctl(0, TIOCGWINSZ, &wins);
-
-	int WIN_XSIZE = wins.ws_row;
-	int WIN_YSIZE = wins.ws_col;
-
-    move(WIN_XSIZE/2, WIN_YSIZE/2);
+    move((*view).win_xsize/2, (*view).win_ysize/2);
     setcolor(0, 31);
     std::cout << "Score:" << (*snakes.begin()).length;
-    move(WIN_XSIZE, WIN_YSIZE);
+    move((*view).win_xsize, (*view).win_ysize);
 
     std::cout << std::flush;
 

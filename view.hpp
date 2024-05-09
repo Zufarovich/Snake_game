@@ -33,7 +33,6 @@ class Rabbit
 class Herd_rabbits
 {
 	public:
-	void create_herd(int number_of_rabbits);
 	std::list<Rabbit> rabbits;
 
 	private:
@@ -42,15 +41,12 @@ class Herd_rabbits
 class Snake
 {
 	public:
-	void create_snake();
-	void create_bot(Snake& previous);
 	int length;
 	coord head;
 	coord tail;
 	std::list<coord> body;
 
 	void change_direction(const char d);
-	int check_self_intersection();
 
 	int get_direction()
 	{
@@ -67,6 +63,8 @@ class View
 	struct termios term_old;
 
 	public:
+	int win_xsize;
+	int win_ysize;
 	static View* view;
 	static View* get_view(std::string view_mode = "text_view");
 	virtual ~View();

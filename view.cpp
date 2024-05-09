@@ -12,9 +12,18 @@ View* View::get_view(std::string view_mode)
 		return view;
 
 	if (view_mode == "text_view")
+	{
+		struct winsize wins;
+		ioctl(0, TIOCGWINSZ, &wins);
+
 		view = new TView;
+		(*view).win_xsize = wins.ws_row;
+		(*view).win_ysize = wins.ws_col;
+	}
 	else
+	{
 		view = new GView;
+	}
 
 	return view;
 }

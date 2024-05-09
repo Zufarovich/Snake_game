@@ -6,9 +6,10 @@
 #include <iostream>
 
 struct option long_options[] = {
-	{"text_view",		 no_argument, 0, 't' },
-	{"graphical_view",  no_argument, 0, 'g' },
-	{"help", no_argument, 0, 'h'},
+	{"text_view",		 no_argument, NULL, 't' },
+	{"graphical_view",  no_argument, NULL, 'g' },
+	{"rabbits", required_argument, NULL, 'r'},
+	{"help", no_argument, NULL, 'h'},
 };
 
 int main(int argc, char* argv[])
@@ -19,8 +20,9 @@ int main(int argc, char* argv[])
 		int  option_index = 0;
 		View* view;
 		bool continue_game = true;
+		int number_of_rabbits = 5;
 
-		while((opt = getopt_long(argc, argv, "tg", long_options, &option_index)) != -1)
+		while((opt = getopt_long(argc, argv, "tg::r:", long_options, &option_index)) != -1)
 		{
 			switch(opt){
 			case 't':
@@ -33,6 +35,9 @@ int main(int argc, char* argv[])
 				std::cout << "use option -t(--text_view) to use text view and -g(--graphical_view) to use graphical view" << std::endl;
 				continue_game = false;
 				break;
+			case 'r':
+				number_of_rabbits = strtol(optarg, (char **)NULL, 10);
+				break;
 			default:
 				view = View::get_view("g_view");
 				std::cout << "with command \"snake --help\" you can get additional information." << std::endl;
@@ -44,7 +49,7 @@ int main(int argc, char* argv[])
 		if(!continue_game)
 			return 0;
 		
-		Model model(*view);
+		Model model(*view, number_of_rabbits);
 		Control control(model, *(model.snakes.begin()));
 		
 		control.get_users_name();

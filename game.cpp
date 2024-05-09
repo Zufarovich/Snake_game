@@ -4,9 +4,6 @@
 #include <unistd.h>
 #include <limits.h>
 
-int win_xsize;
-int win_ysize;
-
 void Model::change_name(char* buff)
 {
 	strncpy(game_name, buff, MAX_LENGTH);
@@ -14,19 +11,7 @@ void Model::change_name(char* buff)
 	usleep(3000000);
 }
 
-void Rabbit::change_position()
-{
-	struct winsize wins;
-	ioctl(0, TIOCGWINSZ, &wins);
-
-	win_xsize = wins.ws_row;
-	win_ysize = wins.ws_col;
-
-	position.first = 2 + rand() % (win_xsize - 2);
-	position.second = 2 + rand() % (win_ysize -2);
-}
-
-void Herd_rabbits::create_herd(int number_of_rabbits)
+void Model::create_herd(int number_of_rabbits)
 {
 	Rabbit rabbit;
 
@@ -34,60 +19,67 @@ void Herd_rabbits::create_herd(int number_of_rabbits)
 
 	for(int i = 0; i < number_of_rabbits; i++)
 	{
-		rabbit.change_position();
-		rabbits.push_back(rabbit);
+		rabbit.position.first = 2 + rand() % (view.win_xsize - 2);
+		rabbit.position.second = 2 + rand() % (view.win_ysize - 2);
+		herd.rabbits.push_back(rabbit);
 	}
 }
 
-void Snake::create_snake()
+void Model::create_snake()
 {
-	length = 4;
+	Snake snake;
+	snake.length = 4;
 
-	head.first = 20;
-	head.second = 12;
+	snake.head.first = 20;
+	snake.head.second = 12;
 
 	coord body_1 = {20, 11};
-	body.push_back(body_1);
+	snake.body.push_back(body_1);
 
 	body_1 = {20, 10};
-	body.push_back(body_1);
+	snake.body.push_back(body_1);
 
-	tail.first = 20;
-	tail.second = 9;
+	snake.tail.first = 20;
+	snake.tail.second = 9;
+
+	snakes.push_back(snake);
 }
 
-void Snake::create_bot(Snake& previous)
+void Model::create_bot()
 {
-	length = 4;
+	Snake snake;
+	snake.length = 4;
 
-	head.first = previous.head.first;
-	head.second = previous.head.second;
+	snake.head.first = (*snakes.end()).head.first;
+	snake.head.second = (*snakes.end()).head.second;
 
-	while((head.first == previous.head.first) || (head.second == previous.head.second))
+	while((snake.head.first == (*snakes.end()).head.first) || (snake.head.second == (*snakes.end()).head.second))
 	{
-		head.first = 2 + rand() % (win_xsize - 2);
-		head.second = 2 + rand() % (win_ysize - 2);
-	}
+		snake.head.first = 2 + rand() % (view.win_xsize - 2);
+		snake.head.second = 2 + rand() % (view.win_ysize - 2);
+	} 
 
-	coord body_1 = {head.first, head.second - 1};
-	body.push_back(body_1);
+	coord body_1 = {snake.head.first, snake.head.second - 1};
+	snake.body.push_back(body_1);
 
-	body_1 = {head.first, head.second - 2};
-	body.push_back(body_1);
+	body_1 = {snake.head.first, snake.head.second - 2};
+	snake.body.push_back(body_1);
 
-	tail.first = head.first;
-	tail.second = head.second - 3;
+	snake.tail.first = snake.head.first;
+	snake.tail.second = snake.head.second - 3;
+
+	snakes.push_back(snake);
 }
 
-int Snake::check_self_intersection()
+int Model::check_self_intersection(std::list<Snake>::iterator snake)
 {
-	for(auto body_elem = body.begin(); body_elem != body.end(); body_elem++)
+	for(auto body_elem = (*snake).body.begin(); body_elem != (*snake).body.end(); body_elem++)
 	{
-		if(head == (*body_elem))
+		if((*snake).head == (*body_elem))
 			return 1;
 	}
 
-	if((head.first == 1) || (head.first == win_xsize) || (head.second == 1) || (head.second == win_ysize))
+	if(((*snake).head.first == 1) || ((*snake).head.first == view.win_xsize) || ((*snake).head.second == 1) || ((*snake).head.second == view.win_ysize))
 		return 1;
 
 	return 0;
@@ -113,13 +105,8 @@ int Model::check_enemy_intersection(std::list<Snake>::iterator candidate, std::l
 
 void Model::generate_snakes()
 {
-	Snake snake;
-	Snake bot;
-	snake.create_snake();
-	bot.create_bot(snake);
-
-	snakes.push_back(snake);
-	snakes.push_back(bot);
+	create_snake();
+	create_bot();
 }
  
 void Model::snake_update(std::list<Snake>::iterator snake)
@@ -208,7 +195,8 @@ void Model::check_eaten_rabbit(std::list<Snake>::iterator snake, Herd_rabbits& h
 	{
 		if((*rabbit).position == (*snake).head) 
 		{
-			(*rabbit).change_position();
+			(*rabbit).position.first = 2 + rand() % (view.win_xsize - 2);
+			(*rabbit).position.second = 2 + rand() % (view.win_ysize - 2);
 
 			(*snake).length++;
 			coord buf_coord = {0, 0};
@@ -227,12 +215,14 @@ void Model::update_model()
 		{
 			snake_update(snake);
 			check_eaten_rabbit(snake, herd);
+			check_self_intersection(snake);
 			i++;
 		}
 		else
 		{
 			bot_update(snake, herd);
 			check_eaten_rabbit(snake, herd);
+			check_self_intersection(snake);
 		}
 	}
 
