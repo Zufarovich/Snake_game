@@ -48,9 +48,9 @@ void TView::draw(std::list<Snake>& snakes, Herd_rabbits& herd)
 	std::cout << std::flush;
 
 	draw_border('|', 0, 0, (*view).win_xsize, 0);
-	draw_border('|', 0, (*view).win_ysize, (*view).win_xsize, (*view).win_ysize);
-	draw_border('-', (*view).win_xsize, 0, (*view).win_xsize, (*view).win_ysize);
-	draw_border('-', 0, 0, 0, (*view).win_ysize);
+	draw_border('|', 0, (*view).win_ysize, (*view).win_xsize, (*view).win_ysize + 10);
+	draw_border('-', (*view).win_xsize, 0, (*view).win_xsize, (*view).win_ysize + 10);
+	draw_border('-', 0, 0, 0, (*view).win_ysize + 10);
 
     draw_herd(herd);
 
