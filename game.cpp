@@ -92,16 +92,16 @@ int Model::check_self_intersection(std::list<Snake>::iterator snake)
 int Model::check_enemy_intersection(std::list<Snake>::iterator candidate, std::list<Snake>::iterator enemy_snake)
 {
 	
-	if((*enemy_snake).head == (*candidate).head)
+	if((*enemy_snake).head == (*candidate).head && (*enemy_snake).length != 0)
 		return 1;
 
 	for(auto body_elem = (*enemy_snake).body.begin(); body_elem != (*enemy_snake).body.end(); body_elem++)
 	{
-		if((*candidate).head == (*body_elem))
+		if((*candidate).head == (*body_elem) && (*enemy_snake).length != 0)
 			return 1;
 	}
 
-	if((*enemy_snake).tail == (*candidate).head)
+	if((*enemy_snake).tail == (*candidate).head && (*enemy_snake).length != 0)
 		return 1;
 
 	return 0;
