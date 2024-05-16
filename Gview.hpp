@@ -23,5 +23,5 @@ class GView : public View
     virtual void mainloop(std::list<Snake>& snakes);
     void draw_border();
     void draw_rabbit(const Rabbit& rabbit);
-    void draw_snake(const Snake& snake);
+    void draw_snake(const Snake& snake, int snake_type);
 };

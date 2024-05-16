@@ -48,21 +48,37 @@ void TView::draw(std::list<Snake>& snakes, Herd_rabbits& herd)
 	std::cout << std::flush;
 
 	draw_border('|', 0, 0, (*view).win_xsize, 0);
-	draw_border('|', 0, (*view).win_ysize, (*view).win_xsize, (*view).win_ysize + 10);
-	draw_border('-', (*view).win_xsize, 0, (*view).win_xsize, (*view).win_ysize + 10);
-	draw_border('-', 0, 0, 0, (*view).win_ysize + 10);
+	draw_border('|', 0, (*view).win_ysize+ 10, (*view).win_xsize, (*view).win_ysize + 10);
+    draw_border('|', 0, (*view).win_ysize, (*view).win_xsize, (*view).win_ysize);
+	draw_border('-', (*view).win_xsize, 0, (*view).win_xsize, (*view).win_ysize + 11);
+	draw_border('-', 0, 0, 0, (*view).win_ysize + 11);
 
     draw_herd(herd);
 
     for(const auto& snake: snakes)
         if(snake.length)
-            draw_snake(snake);
+            if(snake.type)
+                draw_snake(snake, 33);
+            else
+                draw_snake(snake, 32);
+
 
     std::cout << std::flush;
 
     setcolor(0, 31);
-    move(2, (*view).win_ysize - 10);
-    std::cout<< "Score:" << snakes.front().length;
+    move(2, (*view).win_ysize + 1);
+    auto snake = snakes.begin();
+    std::cout<< "Score:" << (*snake).length;
+
+    int i = 1;
+    snake++;
+
+    for(snake; snake != snakes.end(); snake++)
+    {
+        move(2 + i, (*view).win_ysize + 1);
+        std::cout<< "Bot" << i << ":" << (*snake).length;
+        i++;
+    }
 
     setcolor(0, 34);
 	move((*view).win_xsize, (*view).win_ysize);
@@ -117,13 +133,14 @@ void TView::draw_herd(const Herd_rabbits& herd)
     }
 }
 
-void TView::draw_snake(const Snake& snake)
+void TView::draw_snake(const Snake& snake,  int color)
 {
     move(snake.head.first, snake.head.second);
     setcolor(0, 31);
     std::cout << 'O';
 
-    setcolor(0, 32);
+    
+    setcolor(0, color);
     for(const auto& body_elem: snake.body)
     {
         move(body_elem.first, body_elem.second);
@@ -182,11 +199,21 @@ void TView::mainloop(std::list<Snake>& snakes)
 
     cls();
 
-    move((*view).win_xsize/2, (*view).win_ysize/2);
-    setcolor(0, 31);
-    std::cout << "Score:" << (*snakes.begin()).length;
-    move((*view).win_xsize, (*view).win_ysize);
+    auto snake = snakes.begin();
+    int i = 1;
 
+    move(0, (*view).win_ysize/2);
+    setcolor(0, 31);
+    std::cout << "Score:" << (*snake).length;
+    snake++;
+    for(snake; snake != snakes.end(); snake++)
+    {
+        move(1 + i, (*view).win_ysize/2);
+        std::cout<< "Bot" << i << ":" << (*snake).length;
+        i++;
+    }
+
+    move((*view).win_xsize, (*view).win_ysize);
     std::cout << std::flush;
 
     usleep(5000000);

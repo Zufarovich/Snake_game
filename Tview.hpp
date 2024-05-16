@@ -9,7 +9,7 @@ class TView : public View
 	void setcolor(int brightness, int color);
 	void move(int x, int y);
 	void draw_border(char symbol, int start_x, int start_y, int end_x, int end_y);
-	void draw_snake(const Snake& snake);
+	void draw_snake(const Snake& snake, int color);
 	void draw_herd(const Herd_rabbits& herd);
 
 	public:

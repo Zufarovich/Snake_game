@@ -42,6 +42,8 @@ void Model::create_snake()
 	snake.tail.first = 20;
 	snake.tail.second = 9;
 
+	snake.type = 1;
+
 	snakes.push_back(snake);
 }
 
@@ -67,6 +69,8 @@ void Model::create_bot()
 
 	snake.tail.first = snake.head.first;
 	snake.tail.second = snake.head.second - 3;
+
+	snake.type = 0;
 
 	snakes.push_back(snake);
 }

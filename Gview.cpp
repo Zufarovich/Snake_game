@@ -56,10 +56,15 @@ void GView::draw_rabbit(const Rabbit& rabbit)
     window.draw(rabbit_icon);
 }
 
-void GView::draw_snake(const Snake& snake)
+void GView::draw_snake(const Snake& snake, int snake_type)
 {
     head.setPosition(snake.head.second*10, snake.head.first*10);
     window.draw(head);
+
+    if(snake_type)
+        body.setFillColor(sf::Color::Yellow);
+    else
+        body.setFillColor(sf::Color::Green);
 
     for(const auto& body_elem : snake.body)
     {
@@ -80,7 +85,8 @@ void GView::draw(std::list<Snake>& snakes, Herd_rabbits& herd)
 
     for(const auto& snake : snakes)
         if((snake).length)
-            draw_snake(snake);
+            draw_snake(snake, snake.type);
+
 
     auto snake = snakes.begin();
     score.setFont(font);

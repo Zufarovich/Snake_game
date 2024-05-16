@@ -42,6 +42,7 @@ class Snake
 {
 	public:
 	int length;
+	int type;
 	coord head;
 	coord tail;
 	std::list<coord> body;
