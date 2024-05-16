@@ -39,7 +39,7 @@ void Control::check_intersections(int* game_ended)
 
 	for(auto enemy = model.snakes.begin(); enemy != model.snakes.end(); enemy++)
 	{
-		if(snake != enemy && !game_ended)
+		if(snake != enemy && !	(*game_ended))
 			*game_ended = model.check_enemy_intersection(snake, enemy);
 	}
         
