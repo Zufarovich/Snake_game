@@ -149,7 +149,7 @@ void TView::mainloop(std::list<Snake>& snakes)
         ioctl(0, TIOCGWINSZ, &wins);
 
         (*view).win_xsize = wins.ws_row;
-        (*view) .win_ysize = wins.ws_col;
+        (*view) .win_ysize = wins.ws_col - 10;
 
         auto first_time = std::chrono::system_clock::now();
         int n = poll(&input, 1, timeout);

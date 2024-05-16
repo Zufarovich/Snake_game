@@ -18,7 +18,7 @@ View* View::get_view(std::string view_mode)
 
 		view = new TView;
 		(*view).win_xsize = wins.ws_row;
-		(*view).win_ysize = wins.ws_col;
+		(*view).win_ysize = wins.ws_col - 10;
 	}
 	else
 	{
